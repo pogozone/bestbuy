@@ -1,39 +1,62 @@
+import sys
+
 import products
 import store
 
 def go_ahead(store, choice):
-    if choice == "1":
+    try:
+        choice = int(choice)
+    except ValueError:
+        print("\nPlease enter a number from 1 to 5.\n")
+        return True
+
+    if choice == 1:
         print("\nAll products available:\n")
         store.show_all_products()
 
-    elif choice == "2":
+    elif choice == 2:
         print(f"\nTotal amount in store: {store.get_total_quantity()}")
 
-    elif choice == "3":
+    elif choice == 3:
+
         available_products = store.get_all_products()
         store.show_all_products()
 
-        product_number = int(input("\nChoose product: "))
-        amount = int(input("\nAmount to buy: "))
+        try:
 
-        product = available_products[product_number - 1]
+            number = int(input("\nChoose product: "))
+            if not 1 <= number <= len(available_products):
+                print("Dieses Produkt gibt es nicht.")
+                return True
+
+            product = available_products[number - 1]
+
+            amount = int(input("\nAmount to buy: "))
+            if not 1 <= amount <= product.quantity:
+                print(f"Bitte wähle zwischen 1 und {product.quantity} Stück.")
+                return True
+
+        except ValueError:
+            print("Bitte gib eine ganze Zahl ein.")
+            return True
+
         shopping_list = [(product, amount)]
+        total = store.order(shopping_list)
         store.create_basket(shopping_list)
-
-        print(f"Total: {store.order(shopping_list)}")
-        print("Basket:")
+        print(f"\nTotal: {total:.2f} €\nBasket:")
         store.show_basket()
 
-    elif choice == "4":
-        store.clear_basket()
+    elif choice == 4:
+#        store.clear_basket()
+        store.clear_order()
+        print("\nOrder cancelled. Stock restored.")
 
-    elif choice == "5":
+    elif choice >= 5:
         print("\nGoodbye!")
-        return False
+        sys.exit()
 
     else:
-        print("\nPlease enter a number from 1 to 4.")
-    start(store)
+        print("\nPlease enter a number from 1 to 5.\n")
 
 def start(store):
     menu = [
@@ -43,11 +66,12 @@ def start(store):
         "Clear basket",
         "Quit"
     ]
-    print("\n===== Best Buy =====\n")
-    for index, item in enumerate(menu, start=1):
-        print(f"{index}. {item}")
-    choice = input("\nPlease choose a number: ")
-    go_ahead(store, choice)
+    while True:
+        print("\n===== Best Buy =====\n")
+        for index, item in enumerate(menu, start=1):
+            print(f"{index}. {item}")
+        choice = input("\nPlease choose a number: ").strip()
+        go_ahead(store, choice)
 
 def main():
     # setup initial stock of inventory

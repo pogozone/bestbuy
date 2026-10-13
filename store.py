@@ -39,12 +39,20 @@ class Store:
     def create_basket(self, shopping_list):
         for product, amount in shopping_list:
             self.basket.append({
+                "product": product,
                 "name": product.name,
                 "amount": amount,
                 "total_price": product.price * amount,
             })
 
         return self.basket
+
+    def clear_order(self):
+        for item in self.basket:
+            product = item["product"]
+            product.set_quantity(product.quantity + item["amount"])
+
+        self.basket.clear()
 
     def clear_basket(self):
         self.basket = []

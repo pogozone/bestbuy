@@ -11,7 +11,11 @@ class Product:
         return self.quantity
 
     def set_quantity(self, quantity):
+        if quantity < 0:
+            raise ValueError("Der Bestand darf nicht negativ sein.")
+
         self.quantity = quantity
+        self.active = quantity > 0
 
     def is_active(self):
         return self.active
@@ -23,6 +27,9 @@ class Product:
         print("Name:", self.name, "Price", self.price, "Quantity", self.quantity)
 
     def buy(self, quantity) -> float:
+        if type(quantity) is not int or quantity <= 0:
+            print("Die Kaufmenge muss eine positive ganze Zahl sein.")
+            return 0
         if not self.active:
             print(f"Es tut uns leid, aber {self.name} haben wir nicht mehr im Sortiment.")
             return 0
