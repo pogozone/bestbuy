@@ -3,6 +3,7 @@ import products
 class Store:
 
     def __init__(self, product_list):
+        self.basket = []
         self.products_in_store = []
         self.product_list = product_list
         for product in product_list:
@@ -21,21 +22,40 @@ class Store:
             if product.is_active()
         ]
 
+    def show_all_products(self):
+        for index, product in enumerate(self.get_all_products(), start=1):
+            print(
+                f"{index}. {product.name} | "
+                f"Price: {product.price:.2f} | "
+                f"Quantity: {product.quantity}"
+            )
+
     def order(self, shopping_list):
         total_price = 0.0
         for product, amount in shopping_list:
             total_price += product.buy(amount)
         return total_price
 
-    def basket(self, shopping_list):
-        basket = []
+    def create_basket(self, shopping_list):
         for product, amount in shopping_list:
-            basket.append({
+            self.basket.append({
                 "name": product.name,
                 "amount": amount,
                 "total_price": product.price * amount,
             })
-        return basket
+
+        return self.basket
+
+    def clear_basket(self):
+        self.basket = []
+
+    def show_basket(self):
+        for index, item in enumerate(self.basket, start=1):
+            print(
+                f'{index}. {item["name"]} | '
+                f'Menge: {item["amount"]} | '
+                f'Total: {item["total_price"]:.2f} €'
+            )
 
     def get_total_quantity(self):
         total_quantity = 0
@@ -57,7 +77,7 @@ def main():
 
     shopping_list = [(available_products[0], 1), (available_products[1], 2)]
     print(f"Total: {best_buy.order(shopping_list)}")
-    print(f"Basket: {best_buy.basket(shopping_list)}")
+    print(f"Basket: {best_buy.create_basket(shopping_list)}")
 
     print(f"Restbestand: {best_buy.get_total_quantity()}")
 
