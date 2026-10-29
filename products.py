@@ -27,7 +27,8 @@ class Product:
             raise ValueError("Der Bestand darf nicht negativ sein.")
 
         self.quantity = quantity
-        self.active = quantity > 0
+        if quantity == 0:
+            self.active = False
 
     def is_active(self):
         return self.active
