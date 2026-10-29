@@ -38,7 +38,8 @@ class Store:
                 f"Menge: {product.quantity}"
             )
 
-    def order(self, shopping_list):
+    @staticmethod
+    def order(shopping_list):
         """ add product to basket """
         total_price = 0.0
         for product, amount in shopping_list:
