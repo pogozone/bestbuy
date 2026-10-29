@@ -1,6 +1,10 @@
+""" class to store products """
+
 import products
 
+
 class Store:
+    """ store products """
 
     def __init__(self, product_list):
         self.basket = []
@@ -10,12 +14,15 @@ class Store:
             self.add_product(product)
 
     def add_product(self, product):
+        """ add product to store """
         self.products_in_store.append(product)
 
     def remove_product(self, product):
+        """ remove product from store """
         self.products_in_store.remove(product)
 
     def get_all_products(self):
+        """ get all products """
         return [
             product
             for product in self.products_in_store
@@ -23,6 +30,7 @@ class Store:
         ]
 
     def show_all_products(self):
+        """ show all products """
         for index, product in enumerate(self.get_all_products(), start=1):
             print(
                 f"{index}. {product.name} | "
@@ -31,15 +39,18 @@ class Store:
             )
 
     def order(self, shopping_list):
+        """ add product to basket """
         total_price = 0.0
         for product, amount in shopping_list:
             total_price += product.add_to_basket(amount)
         return total_price
 
     def get_total(self):
+        """ return total price of all products """
         return sum(item["total_price"] for item in self.basket)
 
     def create_basket(self, shopping_list):
+        """ create basket """
         for product, amount in shopping_list:
             # Prüfen, ob das Produkt bereits im Warenkorb ist
             existing_item = None
@@ -63,6 +74,7 @@ class Store:
         return self.basket
 
     def clear_order(self):
+        """ clear order """
         for item in self.basket:
             product = item["product"]
             product.set_quantity(product.quantity + item["amount"])
@@ -70,9 +82,11 @@ class Store:
         self.basket.clear()
 
     def clear_basket(self):
+        """ clear basket """
         self.basket = []
 
     def show_basket(self):
+        """ show basket """
         for index, item in enumerate(self.basket, start=1):
             print(
                 f'{index}. {item["name"]} | '
@@ -81,13 +95,18 @@ class Store:
             )
 
     def get_total_quantity(self):
+        """ return total quantity of all products """
         total_quantity = 0
         for product in self.products_in_store:
             total_quantity += product.quantity
         return total_quantity
 
-def main():
 
+def main():
+    """
+    run products on commandline.
+    for development and bugfix purposes
+    """
     product_list = [products.Product("MacBook Air M2", price=1450, quantity=100),
                     products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
                     products.Product("Google Pixel 7", price=500, quantity=250),
@@ -103,6 +122,7 @@ def main():
     print(f"Warenkorb: {best_buy.create_basket(shopping_list)}")
 
     print(f"Restbestand: {best_buy.get_total_quantity()}")
+
 
 if __name__ == "__main__":
     main()

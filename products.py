@@ -1,9 +1,11 @@
+""" product class """
 class Product:
+    """ Repräsentiert ein einzelnes Produkt im Shop mit Preis und Bestand. """
     quantity = 0
     active = True
 
     def __init__(self, name, price, quantity):
-        
+
         # input validation
         if not isinstance(name, str) or not name.strip():
             raise ValueError("Der Name muss ein nicht-leerer String sein.")
@@ -13,16 +15,21 @@ class Product:
 
         if not isinstance(quantity, int) or quantity < 0:
             raise ValueError("Die Menge muss eine ganze Zahl >= 0 sein.")
-        
+
         self.name = name
         self.price = price
         self.quantity = quantity
         self.active = quantity > 0
 
     def get_quantity(self):
+        """ Return the quantity of the product """
         return self.quantity
 
     def set_quantity(self, quantity):
+        """
+        set the quantity of the product.
+        deactivate the product.
+        """
         if quantity < 0:
             raise ValueError("Der Bestand darf nicht negativ sein.")
 
@@ -31,12 +38,15 @@ class Product:
             self.deactivate()
 
     def is_active(self):
+        """ return the active state of the product """
         return self.active
 
     def deactivate(self):
+        """ deactivate the product """
         self.active = False
 
     def show(self):
+        """ print out the current state of the product """
         print("Name:", self.name, "Preis", self.price, "Menge", self.quantity)
 
     def add_to_basket(self, quantity: int) -> float:
@@ -52,7 +62,7 @@ class Product:
           Returns:
               float: Der zu zahlende Gesamtpreis oder 0.0, falls der Kauf fehlschlägt.
           """
-        if type(quantity) is not int or quantity <= 0:
+        if not isinstance(quantity, int) or isinstance(quantity, bool) or quantity <= 0:
             print("Die Kaufmenge muss eine positive ganze Zahl sein.")
             return 0
         if not self.active:
@@ -69,7 +79,12 @@ class Product:
 
         return price_total
 
+
 def main():
+    """
+    run products on commandline.
+    for development and bugfix purposes
+    """
     bose = Product("Bose QuietComfort Earbuds", price=250, quantity=500)
     mac = Product("MacBook Air M2", price=1450, quantity=100)
 
@@ -90,6 +105,7 @@ def main():
     # Gültige Bestellung, neuer Lagerbestand wird angezeigt
     bose.add_to_basket(5)
     bose.show()
+
 
 if __name__ == "__main__":
     main()
