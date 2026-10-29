@@ -3,6 +3,17 @@ class Product:
     active = True
 
     def __init__(self, name, price, quantity):
+        
+        # input validation
+        if not isinstance(name, str) or not name.strip():
+            raise ValueError("Der Name muss ein nicht-leerer String sein.")
+
+        if not isinstance(price, (int, float)) or price < 0:
+            raise ValueError("Der Preis muss eine positive Zahl sein.")
+
+        if not isinstance(quantity, int) or quantity < 0:
+            raise ValueError("Die Menge muss eine ganze Zahl >= 0 sein.")
+        
         self.name = name
         self.price = price
         self.quantity = quantity
