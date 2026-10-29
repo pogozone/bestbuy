@@ -39,8 +39,8 @@ class Product:
     def show(self):
         print("Name:", self.name, "Preis", self.price, "Menge", self.quantity)
 
-    def buy(self, quantity: int) -> float:
-        """Führt einen Kaufvorgang für das Produkt durch.
+    def add_to_basket(self, quantity: int) -> float:
+        """Legt ein Produkt in den Warenkorb.
 
           Prüft, ob die Menge gültig, das Produkt aktiv und ausreichend
           Lagerbestand vorhanden ist. Bei Erfolg wird der Bestand reduziert
@@ -73,8 +73,8 @@ def main():
     bose = Product("Bose QuietComfort Earbuds", price=250, quantity=500)
     mac = Product("MacBook Air M2", price=1450, quantity=100)
 
-    print(bose.buy(50))
-    print(mac.buy(100))
+    print(bose.add_to_basket(50))
+    print(mac.add_to_basket(100))
     print(mac.is_active())
 
     bose.show()
@@ -84,11 +84,11 @@ def main():
     bose.show()
 
     # Zu viel bestellt: Warnung und Abbruch
-    bose.buy(50000000)
+    bose.add_to_basket(50000000)
     bose.show()
 
     # Gültige Bestellung, neuer Lagerbestand wird angezeigt
-    bose.buy(5)
+    bose.add_to_basket(5)
     bose.show()
 
 if __name__ == "__main__":

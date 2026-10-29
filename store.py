@@ -33,18 +33,33 @@ class Store:
     def order(self, shopping_list):
         total_price = 0.0
         for product, amount in shopping_list:
-            total_price += product.buy(amount)
+            total_price += product.add_to_basket(amount)
         return total_price
+
+    def get_total(self):
+        return sum(item["total_price"] for item in self.basket)
 
     def create_basket(self, shopping_list):
         for product, amount in shopping_list:
-            self.basket.append({
-                "product": product,
-                "name": product.name,
-                "amount": amount,
-                "total_price": product.price * amount,
-            })
+            # Prüfen, ob das Produkt bereits im Warenkorb ist
+            existing_item = None
+            for item in self.basket:
+                if item["product"] == product:
+                    existing_item = item
+                    break
 
+            if existing_item:
+                # Menge und Gesamtpreis des bestehenden Eintrags anpassen
+                existing_item["amount"] += amount
+                existing_item["total_price"] += product.price * amount
+            else:
+                # Neuen Eintrag hinzufügen, falls noch nicht vorhanden
+                self.basket.append({
+                    "product": product,
+                    "name": product.name,
+                    "amount": amount,
+                    "total_price": product.price * amount,
+                })
         return self.basket
 
     def clear_order(self):

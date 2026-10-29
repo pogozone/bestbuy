@@ -16,33 +16,63 @@ def handle_show_total_quantity(store):
 
 
 def handle_add_to_basket(store):
-  """Hinzufügen eines Produkts zum Warenkorb."""
+  """Hinzufügen von mehreren Produkten zum Warenkorb."""
   available_products = store.get_all_products()
-  store.show_all_products()
+  shopping_list = []
 
-  try:
-    number = int(input("\nWählen sie ein Produkt: "))
-    if not 1 <= number <= len(available_products):
-      print("Dieses Produkt gibt es nicht.")
-      return True
+  while True:
+    store.show_all_products()
 
-    product = available_products[number - 1]
+    try:
+      number = int(input("\nWählen sie ein Produkt: "))
+      if not 1 <= number <= len(available_products):
+        print("Dieses Produkt gibt es nicht.")
+        continue  # Zurück zum Start der Schleife
 
-    amount = int(input("\nGeben sie die Bestellmenge an: "))
-    if not 1 <= amount <= product.quantity:
-      print(f"Bitte wähle zwischen 1 und {product.quantity} Stück.")
-      return True
+      product = available_products[number - 1]
 
-  except ValueError:
-    print("Bitte gib eine ganze Zahl ein.")
-    return True
+      amount = int(input("\nGeben sie die Bestellmenge an: "))
+      if not 1 <= amount <= product.quantity:
+        print(f"Bitte wähle zwischen 1 und {product.quantity} Stück.")
+        continue  # Zurück zum Start der Schleife
 
-  shopping_list = [(product, amount)]
-  total = store.order(shopping_list)
-  store.create_basket(shopping_list)
-  print(f"\nTotal: {total:.2f} €\ Warenkorb:")
-  store.show_basket()
+    except ValueError:
+      print("Bitte gib eine ganze Zahl ein.")
+      continue
 
+    # Produkt zur lokalen Einkaufsliste hinzufügen
+    shopping_list.append((product, amount))
+    print(f"-> {amount}x {product.name} wurde dem Warenkorb hinzugefügt.")
+
+    # Nachfragen, ob ein weiteres Produkt gewünscht ist
+    another = (
+        input(
+            "\nMöchtest du ein weiteres Produkt hinzufügen? (j/n): "
+        )
+        .strip()
+        .lower()
+    )
+    if another != "j":
+      break
+
+  # Wenn Produkte im Warenkorb gelandet sind, Bestellung abschließen
+  if shopping_list:
+    store.order(shopping_list)
+    store.create_basket(shopping_list)
+    handle_show_basket(store)
+  else:
+    print("\nEs wurden keine Produkte ausgewählt.")
+
+def handle_show_basket(store):
+    """Zeigt den aktuellen Warenkorb und die Gesamtsumme an."""
+    if not store.basket:
+        print("\nDer Warenkorb ist leer.")
+        return
+
+    # Gesamtsumme sicher aus den bereits im Warenkorb gespeicherten Preisen berechnen
+    total = store.get_total()
+    print(f"\nGesamtsumme: {total:.2f} €\nWarenkorb:")
+    store.show_basket()
 
 def handle_clear_basket(store):
   """Warenkorb leeren / Bestellung abbrechen."""
@@ -69,9 +99,9 @@ def go_ahead(store, choice):
   elif choice == 2:
     handle_show_total_quantity(store)
   elif choice == 3:
-    pass  # Platzhalter für zukünftige Logik
-  elif choice == 4:
     handle_add_to_basket(store)
+  elif choice == 4:
+    handle_show_basket(store)
   elif choice == 5:
     handle_clear_basket(store)
   elif choice >= 6:
@@ -85,8 +115,8 @@ def start(store):
     menu = [
         "Zeige alle Produkte",
         "Menge aller Produkte",
-        "Bestellen",
         "In den Warenkorb legen",
+        "Warenkorb anzeigen",
         "Warenkorb leeren",
         "Beenden"
     ]
