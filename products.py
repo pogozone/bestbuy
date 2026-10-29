@@ -28,7 +28,7 @@ class Product:
 
         self.quantity = quantity
         if quantity == 0:
-            self.active = False
+            self.deactivate()
 
     def is_active(self):
         return self.active
@@ -37,9 +37,21 @@ class Product:
         self.active = False
 
     def show(self):
-        print("Name:", self.name, "Price", self.price, "Quantity", self.quantity)
+        print("Name:", self.name, "Preis", self.price, "Menge", self.quantity)
 
-    def buy(self, quantity) -> float:
+    def buy(self, quantity: int) -> float:
+        """Führt einen Kaufvorgang für das Produkt durch.
+
+          Prüft, ob die Menge gültig, das Produkt aktiv und ausreichend
+          Lagerbestand vorhanden ist. Bei Erfolg wird der Bestand reduziert
+          und der Gesamtpreis berechnet.
+
+          Args:
+              quantity (int): Die Anzahl der Einheiten, die gekauft werden sollen.
+
+          Returns:
+              float: Der zu zahlende Gesamtpreis oder 0.0, falls der Kauf fehlschlägt.
+          """
         if type(quantity) is not int or quantity <= 0:
             print("Die Kaufmenge muss eine positive ganze Zahl sein.")
             return 0
@@ -47,14 +59,13 @@ class Product:
             print(f"Es tut uns leid, aber {self.name} haben wir nicht mehr im Sortiment.")
             return 0
         if quantity > self.quantity:
-            print(f"Der Lagerbestand gibt das nicht her! Du kannst maximal {self.quantity} von {self.name} bestellen.")
+            print(f"Du kannst maximal {self.quantity} von {self.name} bestellen.")
             return 0
 
         price_total = quantity * self.price
-        self.quantity -= quantity
 
-        if self.quantity == 0:
-            self.deactivate()
+        new_quantity = self.quantity - quantity
+        self.set_quantity(new_quantity)
 
         return price_total
 

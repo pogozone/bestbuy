@@ -26,8 +26,8 @@ class Store:
         for index, product in enumerate(self.get_all_products(), start=1):
             print(
                 f"{index}. {product.name} | "
-                f"Price: {product.price:.2f} | "
-                f"Quantity: {product.quantity}"
+                f"Preis: {product.price:.2f} | "
+                f"Menge: {product.quantity}"
             )
 
     def order(self, shopping_list):
@@ -85,7 +85,7 @@ def main():
 
     shopping_list = [(available_products[0], 1), (available_products[1], 2)]
     print(f"Total: {best_buy.order(shopping_list)}")
-    print(f"Basket: {best_buy.create_basket(shopping_list)}")
+    print(f"Warenkorb: {best_buy.create_basket(shopping_list)}")
 
     print(f"Restbestand: {best_buy.get_total_quantity()}")
 
