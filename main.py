@@ -36,10 +36,20 @@ def handle_add_to_basket(this_store):
                 continue  # Zurück zum Start der Schleife
 
             product = available_products[number - 1]
+            queued_quantity = sum(  # <-- NEU
+                qty for item_product, qty in shopping_list if item_product == product  # <-- NEU
+            )
+            max_selectable = product.quantity - queued_quantity
+            if max_selectable <= 0:  # <-- NEU
+                print(  # <-- NEU
+                    f"Von {product.name} sind bereits alle verfügbaren "  # <-- NEU
+                    f"({product.quantity}) Stück in dieser Auswahl vorgemerkt."  # <-- NEU
+                )  # <-- NEU
+                continue  # <-- NEU
 
             amount = int(input("\nGeben sie die Bestellmenge an: "))
-            if not 1 <= amount <= product.quantity:
-                print(f"Bitte wähle zwischen 1 und {product.quantity} Stück.")
+            if not 1 <= amount <= max_selectable:
+                print(f"Bitte wähle zwischen 1 und {max_selectable} Stück.")
                 continue  # Zurück zum Start der Schleife
 
         except ValueError:
