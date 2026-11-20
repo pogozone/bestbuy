@@ -18,10 +18,15 @@ def handle_show_total_quantity(this_store):
 
 def handle_add_to_basket(this_store):
     """Hinzufügen von mehreren Produkten zum Warenkorb."""
-    available_products = this_store.get_all_products()
+
     shopping_list = []
 
     while True:
+        available_products = this_store.get_all_products()
+        if not available_products:
+            print("\nAktuell sind keine Produkte mehr verfügbar.")
+            break
+
         this_store.show_all_products()
 
         try:
@@ -79,9 +84,30 @@ def handle_show_basket(this_store):
 
 def handle_clear_basket(this_store):
     """Warenkorb leeren / Bestellung abbrechen."""
+    if not this_store.basket:
+        print("\nEs befinden sich keine Waren im Warenkorb.")
+        return
+
     this_store.clear_order()
     print("\nBestellung abgebrochen. Warenbestand wieder hergestellt.")
 
+def handle_checkout(this_store):
+    """Schließt den Kauf der Warenkorb-Artikel ab und gibt einen Beleg aus."""
+    if not this_store.basket:
+        print("\nDer Warenkorb ist leer.")
+        return
+
+    receipt = this_store.checkout()
+    print("\n===== Kaufbeleg =====")
+    for item in receipt["items"]:
+        print(
+            f"- {item['name']} | Menge: {item['amount']} | "
+            f"Einzelpreis: {item['unit_price']:.2f} € | "
+            f"Gesamt: {item['total_price']:.2f} €"
+        )
+    print("---------------------")
+    print(f"Zu zahlen: {receipt['total']:.2f} €")
+    print("Vielen Dank für deinen Einkauf!")
 
 def handle_exit():
     """Programm beenden."""
@@ -94,7 +120,7 @@ def go_ahead(this_store, choice):
     try:
         choice = int(choice)
     except ValueError:
-        print("\nWählen sie eine Aktion von 1 bis 6.\n")
+        print("\nWählen sie eine Aktion von 1 bis 7.\n")
         return True
 
     # Mapping von Auswahl zu dedizierten Funktionen
@@ -108,10 +134,12 @@ def go_ahead(this_store, choice):
         handle_show_basket(this_store)
     elif choice == 5:
         handle_clear_basket(this_store)
-    elif choice >= 6:
+    elif choice == 6:
+        handle_checkout(this_store)
+    elif choice >= 7:
         handle_exit()
     else:
-        print("\nWählen sie eine Aktion von 1 bis 6.\n")
+        print("\nWählen sie eine Aktion von 1 bis 7.\n")
 
     return True
 
@@ -124,13 +152,14 @@ def start(this_store):
         "In den Warenkorb legen",
         "Warenkorb anzeigen",
         "Warenkorb leeren",
+        "Bestellung abschließen",
         "Beenden"
     ]
     while True:
         print("\n===== Best Buy =====\n")
         for index, item in enumerate(menu, start=1):
             print(f"{index}. {item}")
-        choice = input("\nWählen sie eine Aktion von 1 bis 6: ").strip()
+        choice = input("\nWählen sie eine Aktion von 1 bis 7: ").strip()
         go_ahead(this_store, choice)
 
 

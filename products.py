@@ -41,6 +41,10 @@ class Product:
         """ return the active state of the product """
         return self.active
 
+    def activate(self):
+        """ activate the product """
+        self.active = True
+
     def deactivate(self):
         """ deactivate the product """
         self.active = False

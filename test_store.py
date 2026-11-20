@@ -125,6 +125,28 @@ class TestStore(unittest.TestCase):
         self.assertEqual(empty_store.order([]), 0.0)
         empty_store.clear_order()
 
+    def test_checkout_keeps_reduced_stock_and_clears_basket(self):
+        """Prüft, dass beim Checkout der Bestand reduziert bleibt und der Warenkorb geleert wird."""
+        shopping_list = [(self.mac, 1), (self.bose, 2)]
+        self.store.order(shopping_list)
+        self.store.create_basket(shopping_list)
+
+        receipt = self.store.checkout()
+
+        self.assertAlmostEqual(receipt["total"], 1950.0)
+        self.assertEqual(len(receipt["items"]), 2)
+        self.assertEqual(self.store.basket, [])
+        self.assertEqual(self.mac.quantity, 99)
+        self.assertEqual(self.bose.quantity, 498)
+        self.assertEqual(self.store.get_total_quantity(), 597)
+
+    def test_checkout_on_empty_basket(self):
+        """Prüft das Verhalten von checkout() bei leerem Warenkorb."""
+        receipt = self.store.checkout()
+
+        self.assertEqual(receipt["items"], [])
+        self.assertAlmostEqual(receipt["total"], 0.0)
+        self.assertEqual(self.store.basket, [])
 
 if __name__ == "__main__":
     unittest.main()

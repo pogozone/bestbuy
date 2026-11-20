@@ -79,12 +79,31 @@ class Store:
         for item in self.basket:
             product = item["product"]
             product.set_quantity(product.quantity + item["amount"])
+            products.Product.activate(product)
 
         self.basket.clear()
 
     def clear_basket(self):
         """ clear basket """
         self.basket = []
+
+    def checkout(self):
+        """Finalize the current basket and return receipt data before clearing."""
+        if not self.basket:
+            return {"items": [], "total": 0.0}
+
+        receipt_items = [
+            {
+                "name": item["name"],
+                "amount": item["amount"],
+                "unit_price": item["product"].price,
+                "total_price": item["total_price"],
+            }
+            for item in self.basket
+        ]
+        total = self.get_total()
+        self.clear_basket()
+        return {"items": receipt_items, "total": total}
 
     def show_basket(self):
         """ show basket """
